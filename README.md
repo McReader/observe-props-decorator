@@ -47,7 +47,7 @@ export default class DropDownContainer extends PureComponent {
 
 DropDown.jsx
 ```javascript
-@watchProps
+@observeProps
 export default class DropDown extends PureComponent {
   static propTypes = {
     isOpened: PropTypes.bool,

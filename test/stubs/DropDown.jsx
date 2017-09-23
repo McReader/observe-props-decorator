@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-import { observeProp, watchProps } from '../../src';
+import { observeProp, observeProps } from '../../src';
 
 
-@watchProps
+@observeProps
 export default class DropDown extends PureComponent {
   static propTypes = {
     isOpened: PropTypes.bool,
