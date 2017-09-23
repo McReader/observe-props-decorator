@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import { DropDownContainer, DropDown } from './stubs'
 
 
-describe('simpleKeySelector.spec.js', () => {
+describe('DropDown observing "isOpened" prop. As soon as this prop changed, "onOpenedStateChange" callback should be called', () => {
   const onOpenedStateChange = sinon.spy();
 
   const wrapper = mount(
@@ -15,12 +15,12 @@ describe('simpleKeySelector.spec.js', () => {
   );
   const dropDown = wrapper.find(DropDown);
 
-  it(`Click should trigger an props update, and method marked by @onPropChange decorator should be invoked`, () => {
+  it(`"onOpenedStateChange" should be called once`, () => {
     dropDown.simulate('click');
     expect(onOpenedStateChange.calledOnce).toBe(true);
   });
 
-  it(`Click should trigger an props update, and method marked by @onPropChange decorator should be invoked one more time`, () => {
+  it(`"onOpenedStateChange" should be called twice`, () => {
     dropDown.simulate('click');
     expect(onOpenedStateChange.calledTwice).toBe(true);
   });
