@@ -8,23 +8,21 @@ import { observeProp, observeProps } from '../../src';
 export default class DropDown extends PureComponent {
   static propTypes = {
     isOpened: PropTypes.bool,
-    onClick: PropTypes.func,
     onOpenedStateChange: PropTypes.func,
   };
 
   static defaultProps = {
     isOpened: false,
-    onClick: null,
     onOpenedStateChange: null,
   };
 
   render() {
-    const { children, isOpened, onClick } = this.props;
+    const { children, isOpened } = this.props;
+
+    if (!isOpened) return null;
 
     return (
-      <ul
-        onClick={onClick}
-      >
+      <ul>
         {children}
       </ul>
     )
@@ -36,4 +34,3 @@ export default class DropDown extends PureComponent {
     if (onOpenedStateChange) onOpenedStateChange(next, prev);
   }
 }
-

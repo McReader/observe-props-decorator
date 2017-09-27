@@ -1,73 +1,26 @@
 # Examples
 
-DropDownContainer.jsx
-```javascript
-export default class DropDownContainer extends PureComponent {
-  static propTypes = {
-    onOpenedStateChange: PropTypes.func,
-  };
-
-  static defaultProps = {
-    onOpenedStateChange: null,
-  };
-
-  state = {
-    isOpened: false,
-  };
-
-  render() {
-    const { onOpenedStateChange } = this.props;
-    const { isOpened } = this.state;
-
-    return (
-      <DropDown
-        isOpened={isOpened}
-        onClick={() => this.toggleDropDown()}
-        onOpenedStateChange={onOpenedStateChange}
-      >
-        <DropDownItem>
-          Item 1
-        </DropDownItem>
-        <DropDownItem>
-          Item 2
-        </DropDownItem>
-        <DropDownItem>
-          Item 3
-        </DropDownItem>
-      </DropDown>
-    )
-  }
-
-  /**
-   * @param {boolean} isOpened
-   * */
-  toggleDropDown = (isOpened = !this.state.isOpened) => this.setState({ isOpened });
-}
-```
-
 DropDown.jsx
 ```javascript
 @observeProps
 export default class DropDown extends PureComponent {
   static propTypes = {
     isOpened: PropTypes.bool,
-    onClick: PropTypes.func,
     onOpenedStateChange: PropTypes.func,
   };
 
   static defaultProps = {
     isOpened: false,
-    onClick: null,
     onOpenedStateChange: null,
   };
 
   render() {
-    const { children, isOpened, onClick } = this.props;
+    const { children, isOpened } = this.props;
+
+    if (!isOpened) return null;
 
     return (
-      <ul
-        onClick={onClick}
-      >
+      <ul>
         {children}
       </ul>
     )
@@ -88,19 +41,23 @@ describe('DropDown observing "isOpened" prop. As soon as this prop changed, "onO
   const onOpenedStateChange = sinon.spy();
 
   const wrapper = mount(
-    <DropDownContainer
+    <DropDown
       onOpenedStateChange={onOpenedStateChange}
     />
   );
-  const dropDown = wrapper.find(DropDown);
 
   it(`"onOpenedStateChange" should be called once`, () => {
-    dropDown.simulate('click');
+    wrapper.setProps({isOpened: true});
     expect(onOpenedStateChange.calledOnce).toBe(true);
   });
 
   it(`"onOpenedStateChange" should be called twice`, () => {
-    dropDown.simulate('click');
+    wrapper.setProps({isOpened: false});
+    expect(onOpenedStateChange.calledTwice).toBe(true);
+  });
+
+  it(`"onOpenedStateChange" should not be called third time, because prop doesn't change`, () => {
+    wrapper.setProps({isOpened: false});
     expect(onOpenedStateChange.calledTwice).toBe(true);
   });
 });
