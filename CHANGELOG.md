@@ -1,4 +1,11 @@
 # Changelog
+## 1.1.0-beta (2018-11-08)
+  Since Jest has all we need to mock and spy on functions, there is no need to use Sinon
+  and keep it in the dependencies.
+
+### Remove Dependencies
+  - sinon
+
 ## 1.1.0-beta (2018-11-06)
 
 ### Update Dependencies:
