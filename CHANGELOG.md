@@ -1,5 +1,17 @@
 # Changelog
 ## 1.1.0-beta (2018-11-08)
+
+### Migrate to RxJS v6:
+  - use pipeable operators
+  - update use of Observales and Observer creation
+
+### New Dependencies:
+  - rxjs: ^6.3.3
+
+### Removed Dependencies:
+  -  rx-lite: ^4.0.8
+
+## 1.1.0-beta (2018-11-08)
   Since Jest has all we need to mock and spy on functions, there is no need to use Sinon
   and keep it in the dependencies.
 
@@ -9,7 +21,7 @@
 ## 1.1.0-beta (2018-11-06)
 
 ### Update Dependencies:
-  - @babel/core: ^7.1.2
+  - @babel/core: ^7.1.2,
   - @babel/plugin-proposal-class-properties: ^7.1.0,
   - @babel/plugin-proposal-decorators: ^7.1.2,
   - @babel/preset-env: ^7.1.0,

@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
-import { Observable, Observer, Subject } from 'rx-lite';
+import { from, Subject } from 'rxjs';
+import { map, filter, distinctUntilChanged } from 'rxjs/operators';
 
 import { createSelectorForFunction, throwError } from './utils';
 import { IS_PROP_LISTENER, PROP_KEY } from './constants';
@@ -19,15 +20,18 @@ export default function watchProps(TargetComponent) {
 
       this.filterListeners(protoKeys)
         .subscribe(
-          (listener) => {
-            const propSelector = createSelectorForFunction(listener);
+          {
+            next: (listener) => {
+              const propSelector = createSelectorForFunction(listener);
 
-            this.propsChange$
-              .map(propSelector)
-              .distinctUntilChanged()
+              this.propsChange$.pipe(
+                map(propSelector),
+                distinctUntilChanged(),
+              )
               .subscribe(this.createObserver(propSelector, listener));
-          },
-          throwError,
+            },
+            error: throwError,
+          }
         );
     };
 
@@ -37,10 +41,10 @@ export default function watchProps(TargetComponent) {
      * @return {Observable<Function>}
      * */
     filterListeners = protoKeys =>
-      Observable
-        .from(protoKeys)
-        .map(name => TargetComponent.prototype[name])
-        .filter(method => method[IS_PROP_LISTENER]);
+      from(protoKeys).pipe(
+        map(name => TargetComponent.prototype[name]),
+        filter(method => method[IS_PROP_LISTENER]),
+      );
 
     /**
      * Create an observable which emits only "prop listener" methods
@@ -48,21 +52,22 @@ export default function watchProps(TargetComponent) {
      * @param {Function} fn -
      * @return {Observable<Function>}
      * */
-    createObserver = (propSelector, fn) =>
-      Observer.create(
-        (next) => {
+    createObserver = (propSelector, fn) => (
+      {
+        next: (next) => {
           const prev = propSelector(this.props);
           fn.call(this, next, prev);
         },
-        throwError,
-      );
+        error: throwError,
+      }
+    );
 
     componentWillReceiveProps(nextProps) {
-      this.propsChange$.onNext(nextProps);
+      this.propsChange$.next(nextProps);
     }
 
     componentWillUnmount() {
-      this.propsChange$.onCompleted();
+      this.propsChange$.complete();
     }
 
     render() {
