@@ -1,6 +1,11 @@
 import React, { PureComponent } from 'react';
-import { from, Subject } from 'rxjs';
-import { map, filter, distinctUntilChanged } from 'rxjs/operators';
+//* using exact import paths for rxjs significantly reduces bundle size
+import { Subject } from 'rxjs/internal/Subject';
+import { from } from 'rxjs/internal/observable/from';
+
+import { map } from 'rxjs/internal/operators/map';
+import { filter } from 'rxjs/internal/operators/filter';
+import { distinctUntilChanged } from 'rxjs/internal/operators/distinctUntilChanged';
 
 import { createSelectorForFunction, throwError } from './utils';
 import { IS_PROP_LISTENER, PROP_KEY } from './constants';
