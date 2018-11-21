@@ -1,4 +1,7 @@
 # Changelog
+## 1.1.0-beta (2018-11-21)
+  Documentation improved.
+
 ## 1.1.0-beta (2018-11-11)
   React's "componentWillReceiveProps" is deprecated and will be removed with React v17.
   Since now, Observe-Props-Decorator uses "componentDidUpdate" lifecycle hook under the hood
