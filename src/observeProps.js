@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 
-import { Subject } from 'rxjs/internal/Subject';
-import { from } from 'rxjs/internal/observable/from';
+import { Subject } from 'rxjs';
+import { from } from 'rxjs';
 
 import { map } from 'rxjs/internal/operators/map';
 import { filter } from 'rxjs/internal/operators/filter';
