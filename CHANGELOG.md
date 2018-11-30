@@ -1,6 +1,20 @@
 # Changelog
+
 ## 1.1.0-beta (2018-11-21)
   Documentation improved.
+
+## 1.1.0-beta (2018-11-20)
+  ### New Dependencies:
+  - rollup: ^0.67.3,
+  - rollup-plugin-babel: ^4.0.3,
+  - rollup-plugin-commonjs": ^9.2.0,
+  - rollup-plugin-node-resolve": ^3.4.0
+
+### Removed Dependencies:
+  - gulp: ^4.0.0,
+  - gulp-babel: ^8.0.0,
+  - gulp-concat: ^2.6.1,
+  - gulp-sourcemaps: ^2.6.4,
 
 ## 1.1.0-beta (2018-11-11)
   React's "componentWillReceiveProps" is deprecated and will be removed with React v17.
