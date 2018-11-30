@@ -25,7 +25,7 @@ describe('DropDown observing "isOpened" prop. As soon as this prop changed, "onO
     expect(onOpenedStateChangeSpy).toHaveBeenCalledWith(false, true);
   });
 
-  it(`"onOpenedStateChange" should not be called third time, because prop doesn't change`, () => {
+  it(`"onOpenedStateChange" should not be called third time, because the prop hasn't been changed`, () => {
     wrapper.setProps({isOpened: false});
     expect(onOpenedStateChangeSpy).toHaveBeenCalledTimes(2);
   });

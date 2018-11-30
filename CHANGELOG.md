@@ -1,4 +1,8 @@
 # Changelog
+
+## 1.1.0-beta (2018-11-21)
+  Documentation improved.
+
 ## 1.1.0-beta (2018-11-20)
   ### New Dependencies:
   - rollup: ^0.67.3,
