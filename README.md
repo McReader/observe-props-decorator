@@ -1,4 +1,4 @@
-# Observe-props-decorator
+# Observe-props-decorator (DEPRECATED since React team announced the Effect Hook)
   - motivation;
   - overview;
   - usage proposals;
