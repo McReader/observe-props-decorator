@@ -1,5 +1,11 @@
 import React, { PureComponent } from 'react';
-import { Observable, Observer, Subject } from 'rx-lite';
+
+import { Subject } from 'rxjs';
+import { from } from 'rxjs';
+
+import { map } from 'rxjs/internal/operators/map';
+import { filter } from 'rxjs/internal/operators/filter';
+import { distinctUntilChanged } from 'rxjs/internal/operators/distinctUntilChanged';
 
 import { createSelectorForFunction, throwError } from './utils';
 import { IS_PROP_LISTENER, PROP_KEY } from './constants';
@@ -7,6 +13,7 @@ import { IS_PROP_LISTENER, PROP_KEY } from './constants';
 
 export default function watchProps(TargetComponent) {
   return class WatchPropsWrapper extends PureComponent {
+
     propsChange$ = new Subject();
 
     constructor(props) {
@@ -17,52 +24,53 @@ export default function watchProps(TargetComponent) {
     startWatch = () => {
       const protoKeys = Object.getOwnPropertyNames(TargetComponent.prototype);
 
-      this.filterListeners(protoKeys)
-        .subscribe(
-          (listener) => {
+      from(this.filterListeners(protoKeys))
+        .subscribe({
+          next: (listener) => {
             const propSelector = createSelectorForFunction(listener);
 
-            this.propsChange$
-              .map(propSelector)
-              .distinctUntilChanged()
-              .subscribe(this.createObserver(propSelector, listener));
+            this.propsChange$.pipe(
+              distinctUntilChanged((p, q) => propSelector(p.next) === propSelector(q.next)),
+              map(({ next, prev }) => ({ next: propSelector(next), prev: propSelector(prev) })),
+            )
+            .subscribe(this.createObserver(listener));
           },
-          throwError,
-        );
+          error: throwError,
+        });
     };
 
     /**
-     * Create an observable which emits only "prop listener" methods
+     * Filter and emit only "prop listener" methods
      * @param {string[]} protoKeys
-     * @return {Observable<Function>}
+     * @return {Function[]}
      * */
     filterListeners = protoKeys =>
-      Observable
-        .from(protoKeys)
+      protoKeys
         .map(name => TargetComponent.prototype[name])
         .filter(method => method[IS_PROP_LISTENER]);
 
     /**
-     * Create an observable which emits only "prop listener" methods
+     * Create an observer which calls PROP_LISTENER function with next and prev props
      * @param {Function} propSelector
      * @param {Function} fn -
      * @return {Observable<Function>}
      * */
-    createObserver = (propSelector, fn) =>
-      Observer.create(
-        (next) => {
-          const prev = propSelector(this.props);
-          fn.call(this, next, prev);
-        },
-        throwError,
-      );
+    createObserver = fn =>
+      ({
+        next: ({ next, prev }) =>
+          fn.call(this, next, prev),
+        error: throwError,
+      });
 
-    componentWillReceiveProps(nextProps) {
-      this.propsChange$.onNext(nextProps);
+    componentDidUpdate(prevProps) {
+      this.propsChange$.next({
+        next: this.props,
+        prev: prevProps
+      });
     }
 
     componentWillUnmount() {
-      this.propsChange$.onCompleted();
+      this.propsChange$.complete();
     }
 
     render() {
